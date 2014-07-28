@@ -22,16 +22,16 @@
     socket.on('connect', function(){
       console.log("connected");
 
-      socket.on('chat message', function(data){
-        var ext = require('path').extname(data.name);
-        var filename = 'test' + ext;
-        var maxSize = data.maxSize || 300;
-        var imageBuffer = new Buffer(data.file, 'base64'); //console = <Buffer 75 ab 5a 8a ...
-        show(filename, maxSize);
-      });
-      socket.on('disconnect', function(){
-        console.log('disconnected');
-      });
+    });
+    socket.on('chat message', function(data){
+      var ext = require('path').extname(data.name);
+      var filename = 'test' + ext;
+      var maxSize = data.maxSize || 300;
+      var imageBuffer = new Buffer(data.file, 'base64'); //console = <Buffer 75 ab 5a 8a ...
+      show(filename, maxSize);
+    });
+    socket.on('disconnect', function(){
+      console.log('disconnected');
     });
   }
 
