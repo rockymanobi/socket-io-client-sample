@@ -1,0 +1,10 @@
+{   
+  "name": "test",
+  "main": "main.js",
+  "dependencies": {
+    "underscore": "latest",
+    "ect": "latest",
+    "socket.io-client": "latest"
+    "node-uuid": "latest"
+  }
+}
