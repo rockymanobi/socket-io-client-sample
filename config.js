@@ -7,7 +7,7 @@ module.exports = function( env ){
       hostUrl: "http://localhost:3000"
     },
     production:{
-      hostUrl: "http://spps-demo.herokuapp.com"
+      hostUrl: "http://tv-highlighter-node.herokuapp.com"
     }
   }
 

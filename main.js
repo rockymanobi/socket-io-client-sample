@@ -12,48 +12,89 @@
   var uuid = require('node-uuid');
   var uuidV4 = uuid.v4();
 
+  setTimeout(input, 3000 );
+
+
+
+  // ################################################
+  // Socket IO
+  // ################################################
+  var socket;
   connect();
-
-
-  /*********** Socket ***********/
   function connect(){
     console.log('connecting to ' + SERVER_URL);
-    var socket = require('socket.io-client')( SERVER_URL);
+    socket = require('socket.io-client')( SERVER_URL);
     socket.on('connect', function(){
       console.log("connected");
-
-    });
-    socket.on('chat message', function(data){
-      var ext = require('path').extname(data.name);
-      var filename = 'test' + ext;
-      var maxSize = data.maxSize || 300;
-      var imageBuffer = new Buffer(data.file, 'base64'); //console = <Buffer 75 ab 5a 8a ...
-      show(filename, maxSize);
     });
     socket.on('disconnect', function(){
       console.log('disconnected');
     });
+
+    // テレビから現在情報を受信したとき
+    // コネクト時にも受信するので、この情報を元に、「何を見ているのか」はハンドルできるはず。
+    socket.on('info rcv', function(data){
+      showEvent( "recieved information from TV" );
+      console.log( data );
+    });
+
+    // 番組見終わったとき
+    // このイベントを見て、画面遷移をすると良いと思います。
+    socket.on('finish watching rcv', function(data){
+      showEvent("見終わったよ!" );
+    });
   }
 
-  function show(filename, maxLength){
+  // ################################################
+  // イベントキック
+  // ################################################
+  /**
+   * ふれふれしたらこうなります
+   */
+  function furifuri(){
+    var d = {
+      movieId: "mov0",
+      userId:"user0",
+      userName: "光ぼっくす",
+    };
+    socket.emit( 'furifuri send', d );
+  }
 
-    console.log("rcv : " + uuidV4 + " : " + filename);
-    return;
-    /*
-    var fs = require('fs');
-    var ECT = require('ect');
 
-    var _maxLength = maxLength || 400; // $B2?$bF~NO$,$J$1$l$P(B400px$B%5%$%:$K$9$k(B
-    var uploadDirPath = __dirname + '/upload';
+  // ################################################
+  // 以下、コマンドラインによる開発用なので不要
+  // ################################################
+  function showEvent( txt ){
+    console.log( "######" + txt);
+  }
 
-    var renderer = ECT({ root : __dirname + '/photoshop_scripts' });
-    var data = { fname : filename, maxLength: _maxLength, uploadDirPath: uploadDirPath };
-    var html = renderer.render('template.ect', data);
 
-    _generator.evaluateJSXString(html);
+  function toEnd(){
+    console.log("to END");
+    socket.emit("go to end command send", {});
+  };
+  function input(){
+    var readline = require('readline');
+    var rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout
+    });
 
-    return;
-    */
+    var msg = "#### コマンドラインで操作できます。\n"
+                + "1: フリフリを送る\n";
+
+    rl.question(msg, function(answer) {
+
+      console.log("Thank you for your valuable feedback:", answer);
+
+      if( answer === "1" ){
+        furifuri();
+      }else if( answer === "2" ){
+        toEnd();
+      }
+      rl.close();
+      setTimeout(input, 1000);
+    });
   }
   
 

@@ -6,5 +6,9 @@
     "ect": "latest",
     "socket.io-client": "latest",
     "node-uuid": "latest"
+  },
+  "devDependencies": {
+    "node-dev": "latest"
   }
+  
 }
